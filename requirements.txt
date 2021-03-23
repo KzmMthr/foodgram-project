@@ -1,0 +1,9 @@
+django==3.1
+django-model-utils==4.0.0
+psycopg2-binary==2.8.5
+django-debug-toolbar==2.2
+python-dotenv==0.15.0
+gunicorn==20.0.4
+Pillow==8.0.1
+djangorestframework==3.12.2
+sorl-thumbnail==12.6.3

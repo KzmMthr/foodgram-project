@@ -1,0 +1,71 @@
+{% extends 'base.html' %} 
+{% load user_filters %} 
+{% load thumbnail %}
+
+{% block title %} 
+    Мои подписки
+{% endblock %}
+
+{% load static %} 
+{% block css %}
+<link rel="stylesheet" href="{% static 'pages/myFollow.css' %}">
+{% endblock %} 
+
+{% block header %}
+    <div class="main__header">
+        <h1 class="main__title">Мои подписки</h1>
+    </div>
+{% endblock %} 
+
+{% block content %}
+{% csrf_token %}    
+    <div class="card-list">
+        {% for author in page %}
+        <div class="card-user" data-author="{{ author.id }}">
+        <div class="card-user__header">
+            <h2 class="card-user__title">{{ author.get_full_name }}</h2>
+        </div>
+        <div class="card-user__body">
+            <ul class="card-user__items">
+                {% for recipe in author.recipe.all %}
+                    {% if forloop.counter < 4 %}
+                    <li class="card-user__item">
+                        <div class="recipe">
+                            {% thumbnail recipe.image "240x240" as im %}
+                                <img src="{{ im.url }}" alt="Картинка" class="recipe__image">
+                            {% endthumbnail %}
+                            <a class="card__title link" href="{% url 'recipe_view' pk=recipe.id %}" target="_blank"><h3 class="recipe__title">{{ recipe.title }}</h3></a>
+                            <p class="recipe__text"><span class="icon-time"></span>  {{ recipe.cooking_time }} мин.</p>
+                        </div>
+                    </li> 
+                    {% endif %}
+                {% endfor %}
+                {% if author.recipe_ingredients >= 4 %}
+                    <li class="card-user__item">
+                        <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ author.recipe_ingredients|add:"-3" }} рецептов...</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </div>
+        
+        <div class="card-user__footer">
+
+            <button class="button button_style_light-blue button_size_auto" name="subscribe" onClick="refreshPage()">Отписаться</button>
+        </div>
+        </div>
+        {% endfor %}
+        
+    </div>
+    {% include 'includes/pagination.html' with items=page paginator=paginator %} 
+{% endblock %} 
+
+{% block js %} 
+<script src="{% static 'js/config/config.js' %}"></script>
+<script src="{% static 'js/components/MainCards.js' %}"></script>
+<script src="{% static 'js/components/MyFollow.js' %}"></script>
+<script src="{% static 'js/components/Subscribe.js' %}"></script>
+<script src="{% static 'js/components/Header.js' %}"></script>
+<script src="{% static 'js/api/Api.js' %}"></script>
+<script src="{% static 'js/myFollow.js' %}"></script>
+
+{% endblock %}

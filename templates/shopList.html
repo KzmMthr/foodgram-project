@@ -1,0 +1,59 @@
+{% extends 'base.html' %} 
+
+{% load user_filters %} 
+{% load thumbnail %}
+
+{% block title %} 
+    Список покупок
+{% endblock %} 
+
+{% load static %} 
+{% block css %}
+    <link rel="stylesheet" href="{% static 'pages/shopList.css' %}">
+{% endblock %} 
+
+{% block header %}
+    <div class="main__header">
+        <h1 class="main__title">Список покупок</h1>
+    </div>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %}
+
+    {% if not recipes %}
+        <p class="card__text">Список покупок пуст</p>
+    {% endif %}
+    
+    <div class="card-list card-list_column">
+        <ul class="shopping-list"></ul>
+        {% for recipe in recipes %}
+            <li class="shopping-list__item" data-id="{{ recipe.id }}">
+                <div class="recipe recipe_reverse">
+                    {% thumbnail recipe.image "240x240" as im %}
+                        <img src="{{ im.url }}" alt="Картинка" class="recipe__image recipe__image_big">
+                    {% endthumbnail %}
+                    <a class="card__title link" href="{% url 'recipe_view' pk=recipe.id %}" target="_blank"><h3 class="recipe__title">{{ recipe.title }}</h3></a>
+                    <p class="recipe__text"><span class="icon-time"></span> {{ recipe.cooking_time }} мин.</p>
+                </div>
+                <a href="{% url 'purchase_remove' recipe.id %}" class="shopping-list__button link">Удалить</a>
+            </li>
+        {% endfor %}
+        </ul>
+        
+        {% if recipes %}
+            <a href="{% url 'shoplist' %}"><button class="button button_style_blue">Скачать список</button></a>
+        {% endif %}
+        
+    </div>
+{% endblock %}
+
+{% block js %}
+    <script src="{% static 'js/config/config.js' %}"></script>
+    <script src="{% static 'js/components/Header.js' %}"></script>
+    <script src="{% static 'js/components/ShopList.js' %}"></script>
+    <script src="{% static 'js/api/Api.js' %}"></script>
+    <script src="{% static 'js/shopList.js' %}"></script>
+{% endblock %}
+    
+

@@ -1,0 +1,52 @@
+{% load user_filters %} 
+{% if user.is_authenticated %} 
+<nav class="nav">
+  <div class="nav__container container">
+    <ul class="nav__items list">
+      <li class="nav__item {% active 'index' %}">
+        <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
+      </li>
+      <li class="nav__item {% active 'subscriptions' %}">
+        <a href="{% url 'subscriptions' %}" class="nav__link link">Мои подписки</a>
+      </li>
+      <li class="nav__item {% active 'recipe_add' %}">
+        <a href="{% url 'recipe_add' %}" class="nav__link link">Создать рецепт</a>
+      </li>
+      <li class="nav__item {% active 'favorites' %}">
+        <a href="{% url 'favorites' %}" class="nav__link link">Избранное</a>
+      </li>
+      <li class="nav__item {% active 'purchases' %}">
+        <a href="{% url 'purchases' %}" class="nav__link link">Список покупок</a>
+        <span class="badge badge_style_blue nav__badge" id="counter">{{ purchase_count|default_if_none:"0" }}</span>
+      </li>
+    </ul>
+    <ul class="nav__items list">
+      <li class="nav__item">
+        <a href="{% url 'password_change' %}" class="nav__link link">Изменить пароль</a>
+      </li>
+      <li class="nav__item"><a href="{% url 'logout' %}" class="nav__link link">Выход</a></li>
+    </ul>
+  </div>
+</nav>
+{% else %} 
+<nav class="nav">
+  <div class="nav__container container">
+    <ul class="nav__items list">
+      <li class="nav__item nav__item_disabled">
+        <a href="{% url 'index' %}" class="nav__link link">Рецепты</a>
+      </li>
+
+    </ul>
+    <ul class="nav__items list">
+      <li class="nav__item">
+        <a href="{% url 'login' %}" class="nav__link link">Войти</a>
+      </li>
+      <li class="nav__item">
+        <a href="{% url 'signup' %}" class="button button_style_blue"
+          >Создать аккаунт</a
+        >
+      </li>
+    </ul>
+  </div>
+</nav>
+{% endif %}
