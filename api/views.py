@@ -38,9 +38,7 @@ class SubscribeViewSet(CreateResponseMixin, viewsets.ModelViewSet):
     def destroy(self, request, *args, **kwargs):
         author = get_object_or_404(User, pk=kwargs['pk'])
         subscribe = author.following.filter(follower=request.user)
-        if subscribe.delete():
-            return Response({"success": True})
-        return Response({"success": False})
+        return Response({'success': bool(subscribe.delete())})
 
 
 class FavoriteViewSet(CreateResponseMixin, viewsets.ModelViewSet):

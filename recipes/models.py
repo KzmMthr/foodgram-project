@@ -41,11 +41,11 @@ class Recipe(TimeStampedModel):
                              max_length=250, db_index=True)
     description = models.TextField(verbose_name='описание')
     image = models.ImageField(verbose_name='картинка', upload_to='upload')
-    cooking_time = models.IntegerField(
+    cooking_time = models.PositiveIntegerField(
         verbose_name='время приготовления в минутах')
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, verbose_name='автор',
-        related_name='recipe', db_index=True)
+        related_name='recipes', db_index=True)
     ingredients = models.ManyToManyField(
         Ingredient, through='RecipeIngredient')
     tags = models.ManyToManyField(Tag, related_name='recipes')
@@ -65,7 +65,7 @@ class RecipeIngredient(models.Model):
         related_name='recipe_ingredients')
     ingredient = models.ForeignKey(
         Ingredient, verbose_name='ингредиент', on_delete=models.CASCADE)
-    cnt = models.IntegerField(verbose_name='количество')
+    count = models.PositiveIntegerField(verbose_name='количество')
     created = AutoCreatedField(verbose_name='дата создания')
 
     class Meta:

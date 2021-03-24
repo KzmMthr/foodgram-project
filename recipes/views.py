@@ -8,14 +8,13 @@ from api.models import Purchase
 
 from .forms import RecipeEnterForm
 from .models import Recipe, Tag
-from .utils import paginator_mixin, save_recipe
+from .utils import paginator_mixin, get_tags
 
 User = get_user_model()
 
 
 def index(request):
-    tags = request.GET.getlist('tags')
-    if tags:
+    if get_tags(request):
         recipes = Recipe.objects.prefetch_related(
             'author', 'tags'
         ).filter(
@@ -41,14 +40,14 @@ def recipe_add(request):
 
     if request.method == 'POST':
         if 'nameIngredient_1' not in request.POST:
-            form.add_error(None, 'Не введены ингридиенты!')
+            form.add_error(None, request.POST)
 
     if form.is_valid():
-        recipe_save = save_recipe(request, form)
+        recipe_save = form.save_recipe(request)
         if recipe_save == 400:
             return redirect('page_bad_request')
         return redirect('index')
-    return render(request, 'formRecipe.html', {'form': form})
+    return render(request, 'formRecipe.html', {'form': form, 'title': 'Создание рецепта', 'button': 'сохранить'})
 
 
 @login_required
@@ -68,13 +67,13 @@ def recipe_edit(request, pk):
         for tag_id in recipe.tags.all():
             recipe.tags.remove(tag_id)
         recipe.recipe_ingredients.all().delete()
-        recipe_save = save_recipe(request, form)
+        recipe_save = form.save_recipe(request)
         if recipe_save == 400:
             return redirect('page_bad_request')
         return redirect('recipe_view', pk=pk)
 
-    return render(request, 'formChangeRecipe.html',
-                  {'form': form, 'recipe': recipe})
+    return render(request, 'formRecipe.html',
+                  {'form': form, 'recipe': recipe, 'title': 'Редактирование', 'button': 'Сохранить изменения'})
 
 
 @login_required
@@ -95,8 +94,7 @@ def profile(request, username):
 
 @login_required
 def favorites(request):
-    tags = request.GET.getlist('tags')
-    if tags:
+    if get_tags(request):
         recipes = Recipe.objects.filter(
             favorites__author=request.user).prefetch_related(
             'author', 'tags').filter(
@@ -112,9 +110,9 @@ def favorites(request):
 
 @login_required
 def subscriptions(request):
-    authors = User.objects.prefetch_related('recipe').filter(
+    authors = User.objects.prefetch_related('recipes').filter(
         following__follower=request.user).annotate(
-        recipe_ingredients=Count('recipe__id'))
+        recipe_ingredients=Count('recipes__id'))
     page, paginator = paginator_mixin(request, authors)
     return render(request, 'myFollow.html',
                   {'page': page, 'paginator': paginator})
@@ -138,8 +136,7 @@ def purchase_count(request):
     if request.user.is_authenticated:
         return {'purchase_count': Purchase.objects.filter(author=request.user
                                                           ).count()}
-    else:
-        return {'purchase_count': None}
+    return {'purchase_count': None}
 
 
 @login_required
@@ -152,7 +149,7 @@ def get_shoplist(request):
 
     ingredient_txt = [
         (f"\u2022 {item['ingredients__name'].capitalize()} "
-         f"({item['ingredients__dimension']}) \u2014 {item['cnt']} \n")
+         f"({item['ingredients__dimension']}) \u2014 {item['count']} \n")
         for item in ingredients
     ]
     filename = 'shoplist.txt'

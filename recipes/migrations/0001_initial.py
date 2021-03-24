@@ -69,7 +69,7 @@ class Migration(migrations.Migration):
             name='RecipeIngredient',
             fields=[
                 ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('cnt', models.IntegerField(verbose_name='количество')),
+                ('count', models.IntegerField(verbose_name='количество')),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False, verbose_name='дата создания')),
                 ('ingredient', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='recipes.ingredient', verbose_name='ингредиент')),
                 ('recipe', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='recipe_ingredients', to='recipes.recipe', verbose_name='рецепт')),

@@ -2,7 +2,7 @@
 {% load user_filters %} 
 
 {% block title %} 
-  Создание рецепта 
+  {{ title }}
 {% endblock %} 
 
 {% load static %} 
@@ -12,13 +12,14 @@
 
 {% block header %}
   <div class="main__header">
-    <h1 class="main__title">Создание рецепта</h1>
+    <h1 class="main__title">{{ title }}</h1>
   </div>
 {% endblock %}
+
 {% block content %}
   <div class="form-container">
     <form class="form" method="post" enctype="multipart/form-data" action="{% url 'recipe_add' %}">
-      {% csrf_token %} 
+      {% csrf_token %}
 
       {% if form.errors %} 
           {% for error in form.field_errors %}
@@ -96,7 +97,7 @@
       </div>
 
       <div class="form__footer">
-        <button class="button button_style_blue">Создать рецепт</button>
+        <button class="button button_style_blue">{{ button }}</button>
       </div>
     </form>
   </div>

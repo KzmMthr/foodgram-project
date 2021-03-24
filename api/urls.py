@@ -12,7 +12,7 @@ router.register('purchases', PurchaseViewSet)
 router.register('subscriptions', SubscribeViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('v1/', include(router.urls)),
     path('ingredients/', IngredientAPIView.as_view()),
 
 ]
