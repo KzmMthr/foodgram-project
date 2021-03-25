@@ -33,9 +33,7 @@ def is_subscribe(value, follower):
 
 @register.filter
 def remove_from_list(obj, value):
-    while obj.count(value) > 1:
-        obj.remove(value)
-    return obj.remove(value)
+    return [elem for elem in obj if elem != value]
 
 
 @register.simple_tag(takes_context=True)

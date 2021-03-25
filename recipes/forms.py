@@ -4,9 +4,7 @@ from django import forms
 from django.db import IntegrityError, transaction
 from django.shortcuts import get_object_or_404
 
-from .models import Ingredient, RecipeIngredient
-
-from .models import Recipe
+from .models import Ingredient, Recipe, RecipeIngredient
 
 
 class RecipeEnterForm(forms.ModelForm):
@@ -48,8 +46,12 @@ class RecipeEnterForm(forms.ModelForm):
                             Ingredient, name=name, dimension=dimension)
                         ingredients.append(
                             RecipeIngredient(
-                                ingredient=ingredient, recipe=recipe, count=count)
+                                ingredient=ingredient,
+                                recipe=recipe, count=count
+                            )
                         )
-                RecipeIngredient.objects.bulk_create(ingredients)
+                RecipeIngredient.objects.bulk_create(
+                    ingredients
+                )
         except IntegrityError:
             return 400

@@ -8,20 +8,21 @@ from api.models import Purchase
 
 from .forms import RecipeEnterForm
 from .models import Recipe, Tag
-from .utils import paginator_mixin, get_tags
+from .utils import get_recipes_tags, paginator_mixin
 
 User = get_user_model()
 
 
 def index(request):
-    if get_tags(request):
-        recipes = Recipe.objects.prefetch_related(
-            'author', 'tags'
-        ).filter(
-            tags__slug__in=tags
-        ).distinct()
-    else:
-        recipes = Recipe.objects.all()
+    # if get_tags(request):
+    #     recipes = Recipe.objects.prefetch_related(
+    #         'author', 'tags'
+    #     ).filter(
+    #         tags__slug__in=tags
+    #     ).distinct()
+    # else:
+    #     recipes = Recipe.objects.all()
+    recipes = get_recipes_tags(request)
     all_tags = Tag.objects.all()
     page, paginator = paginator_mixin(request, recipes)
     return render(
@@ -47,7 +48,10 @@ def recipe_add(request):
         if recipe_save == 400:
             return redirect('page_bad_request')
         return redirect('index')
-    return render(request, 'formRecipe.html', {'form': form, 'title': 'Создание рецепта', 'button': 'сохранить'})
+    return render(
+        request, 'formRecipe.html',
+        {'form': form, 'title': 'Создание рецепта', 'button': 'сохранить'}
+    )
 
 
 @login_required
@@ -60,6 +64,11 @@ def recipe_edit(request, pk):
                            files=request.FILES or None, instance=recipe)
 
     if request.method == 'POST':
+        """
+        Не могу придумать другую проверку, чтобы выводил ошибку в форму
+        nameIngridient вписан константой в js формы, если введен хоть один
+        ингридиент, то в пост запросе появлется nameIngredient_1
+        """
         if 'nameIngredient_1' not in request.POST:
             form.add_error(None, 'Не введены ингридиенты')
 
@@ -72,8 +81,11 @@ def recipe_edit(request, pk):
             return redirect('page_bad_request')
         return redirect('recipe_view', pk=pk)
 
-    return render(request, 'formRecipe.html',
-                  {'form': form, 'recipe': recipe, 'title': 'Редактирование', 'button': 'Сохранить изменения'})
+    return render(request, 'formRecipe.html', {'form': form,
+                                               'recipe': recipe,
+                                               'title': 'Редактирование',
+                                               'button': 'Сохранить'}
+                  )
 
 
 @login_required
@@ -94,13 +106,7 @@ def profile(request, username):
 
 @login_required
 def favorites(request):
-    if get_tags(request):
-        recipes = Recipe.objects.filter(
-            favorites__author=request.user).prefetch_related(
-            'author', 'tags').filter(
-            tags__slug__in=tags).distinct()
-    else:
-        recipes = Recipe.objects.filter(favorites__author=request.user)
+    recipes = get_recipes_tags(request).filter(favorites__author=request.user)
     all_tags = Tag.objects.all()
     page, paginator = paginator_mixin(request, recipes)
     return render(
