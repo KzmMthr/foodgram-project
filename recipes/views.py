@@ -52,9 +52,8 @@ def recipe_edit(request, pk):
     form = RecipeEnterForm(request.POST or None,
                            files=request.FILES or None, instance=recipe)
 
-    if request.method == 'POST':
-        if 'nameIngredient_1' not in request.POST:
-            form.add_error(None, 'Не введены ингридиенты')
+    if request.method == 'POST' and not get_ingridients(request):
+        form.add_error(None, 'Введите хотя бы один ингридиент')
 
     if form.is_valid():
         for tag_id in recipe.tags.all():
