@@ -8,20 +8,12 @@ from api.models import Purchase
 
 from .forms import RecipeEnterForm
 from .models import Recipe, Tag
-from .utils import get_recipes_tags, paginator_mixin
+from .utils import get_recipes_tags, paginator_mixin, get_ingridients
 
 User = get_user_model()
 
 
 def index(request):
-    # if get_tags(request):
-    #     recipes = Recipe.objects.prefetch_related(
-    #         'author', 'tags'
-    #     ).filter(
-    #         tags__slug__in=tags
-    #     ).distinct()
-    # else:
-    #     recipes = Recipe.objects.all()
     recipes = get_recipes_tags(request)
     all_tags = Tag.objects.all()
     page, paginator = paginator_mixin(request, recipes)
@@ -38,11 +30,8 @@ def recipe_view(request, pk):
 @login_required
 def recipe_add(request):
     form = RecipeEnterForm(request.POST or None, files=request.FILES or None)
-
-    if request.method == 'POST':
-        if 'nameIngredient_1' not in request.POST:
-            form.add_error(None, request.POST)
-
+    if request.method == 'POST' and not get_ingridients(request):
+        form.add_error(None, 'Введите хотя бы один ингридиент')
     if form.is_valid():
         recipe_save = form.save_recipe(request)
         if recipe_save == 400:
@@ -64,11 +53,6 @@ def recipe_edit(request, pk):
                            files=request.FILES or None, instance=recipe)
 
     if request.method == 'POST':
-        """
-        Не могу придумать другую проверку, чтобы выводил ошибку в форму
-        nameIngridient вписан константой в js формы, если введен хоть один
-        ингридиент, то в пост запросе появлется nameIngredient_1
-        """
         if 'nameIngredient_1' not in request.POST:
             form.add_error(None, 'Не введены ингридиенты')
 

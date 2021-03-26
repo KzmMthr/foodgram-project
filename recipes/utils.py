@@ -19,3 +19,10 @@ def get_recipes_tags(request):
         ).filter(tags__slug__in=tags).distinct()
     else:
         return Recipe.objects.all()
+
+
+def get_ingridients(request):
+    for key in request.POST:
+        if key.startswith("nameIngredient"):
+            return True
+    return False
