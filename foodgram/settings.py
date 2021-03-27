@@ -1,23 +1,18 @@
 import os
 from pathlib import Path
 
-from dotenv import load_dotenv
+ENV = os.environ
+BASE_DIR = Path(__file__).resolve().parent.parent
+SECRET_KEY = ENV.get('DJANGO_SECRET_KEY')
+# ALLOWED_HOSTS = ENV.get('DJANGO_ALLOWED_HOSTS').split(', ')
+ALLOWED_HOSTS = ['130.193.35.149',  '0.0.0.0', '[::1]']
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-
-load_dotenv(dotenv_path)
-
-BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
-
-SECRET_KEY = 'ixn4bt@47kav1la4o8-7uriyzcr^*_q$8(g2v0w=!*+vq$@7as'
-
-DEBUG = True
-
-ALLOWED_HOSTS = ['*']
+DEBUG = False
 
 INSTALLED_APPS = [
     'users',
     'recipes',
+    'api',
     'django.contrib.sites',
     'django.contrib.flatpages',
     'django.contrib.admin',
@@ -27,7 +22,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'api',
     'sorl.thumbnail',
 ]
 
@@ -64,27 +58,17 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'foodgram.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': os.environ.get('DB_ENGINE'),
-#         'NAME': os.environ.get('DB_NAME'),
-#         'USER': os.environ.get('POSTGRES_USER'),
-#         'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-#         'HOST': os.environ.get('DB_HOST'),
-#         'PORT': os.environ.get('DB_PORT'),
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': ENV.get('DB_ENGINE'),
+        'NAME': ENV.get('DB_NAME'),
+        'USER': ENV.get('POSTGRES_USER'),
+        'PASSWORD': ENV.get('POSTGRES_PASSWORD'),
+        'HOST': ENV.get('DB_HOST'),
+        'PORT': ENV.get('DB_PORT'),
     }
 }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator', },
@@ -104,9 +88,10 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+
 if DEBUG:
     STATICFILES_DIRS = (
-        os.path.join(BASE_DIR, 'recipes/static'),
+        os.path.join(BASE_DIR, 'static'),
     )
 else:
     STATIC_ROOT = os.path.join(BASE_DIR, 'static')
