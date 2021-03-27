@@ -10,13 +10,9 @@ These instructions will get you a copy of the project up and running on your loc
 
 ### Prerequisites
 
-You need to install Docker.
-
 [install docker](https://docs.docker.com/engine/install/)
 
-Install Docker Compose
-
-[intall docker-compose](https://docs.docker.com/compose/install/)
+[install docker-compose](https://docs.docker.com/compose/install/)
 
 ### Installing
 
