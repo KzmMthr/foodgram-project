@@ -3,7 +3,7 @@
 {% load thumbnail %}
 
 {% block title %}
-    Французские тосты 
+    {{ recipe.title }}
 {% endblock %} 
 
 {% load static %} 
@@ -60,7 +60,7 @@
             <div class="single-card__items single-card__items_column">
                 {% for ingredient in recipe.recipe_ingredients.all %}
                     <p class="single-card__section-item">
-                    {{ ingredient.ingredient.name }} - {{ ingredient.cnt }} {{ ingredient.ingredient.dimension }}.
+                    {{ ingredient.ingredient.name }} - {{ ingredient.count }} {{ ingredient.ingredient.dimension }}.
                     </p>
                 {% endfor %}
             </div>

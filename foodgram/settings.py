@@ -5,7 +5,7 @@ ENV = os.environ
 BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = ENV.get('DJANGO_SECRET_KEY')
 # ALLOWED_HOSTS = ENV.get('DJANGO_ALLOWED_HOSTS').split(', ')
-ALLOWED_HOSTS = ['130.193.35.149',  '0.0.0.0', '[::1]']
+ALLOWED_HOSTS = ['*']
 
 DEBUG = False
 
@@ -32,6 +32,7 @@ MIDDLEWARE = [
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'django.contrib.flatpages.middleware.FlatpageFallbackMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 

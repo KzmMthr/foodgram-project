@@ -55,3 +55,8 @@ class RecipeEnterForm(forms.ModelForm):
                 )
         except IntegrityError:
             return 400
+
+    def edit_recipe(self, request, form, instance):
+        with transaction.atomic():
+            RecipeIngredient.objects.filter(recipe=instance).delete()
+            return save_recipe(request, form)

@@ -2,8 +2,8 @@ from django.conf import settings
 from django.conf.urls import handler400, handler404, handler500
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.contrib.flatpages import views
 from django.urls import include, path
+from . import views
 
 handler404 = 'foodgram.views.page_not_found'  # noqa
 handler500 = 'foodgram.views.server_error'  # noqa
@@ -20,8 +20,8 @@ urlpatterns = [
 
 
 urlpatterns += [
-    path('about-us/', views.flatpage, {'url': '/about-us/'}, name='about'),
-    path('tech/', views.flatpage, {'url': '/tech/'}, name='tech'),
+    path('author/', views.AuthorStaticPage.as_view()),
+    path('tech/', views.TechStaticPage.as_view()),
 ]
 
 

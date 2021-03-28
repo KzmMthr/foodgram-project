@@ -67,7 +67,8 @@ def recipe_edit(request, pk):
     return render(request, 'formRecipe.html', {'form': form,
                                                'recipe': recipe,
                                                'title': 'Редактирование',
-                                               'button': 'Сохранить'}
+                                               'button': 'Сохранить',
+                                               'delete': 'Удалить'}
                   )
 
 
@@ -134,7 +135,7 @@ def get_shoplist(request):
         'ingredients', 'recipe_ingredients').filter(
         purchases__author=request.user).order_by('ingredients__name').values(
         'ingredients__name', 'ingredients__dimension').annotate(
-        cnt=Sum('recipe_ingredients__cnt'))
+        count=Sum('recipe_ingredients__count'))
 
     ingredient_txt = [
         (f"\u2022 {item['ingredients__name'].capitalize()} "

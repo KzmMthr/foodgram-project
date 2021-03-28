@@ -16,7 +16,7 @@ services:
       - ./.env
 
   web:
-    image: izdez/foodgram:latest
+    build: .
     container_name: web
     restart: always
     volumes:

@@ -1,7 +1,7 @@
 {% extends "base.html" %}  
 
 {% block title %}
-    {{ flatpage.title }}
+    {{ title }}
 {% endblock %} 
 
 {% load static %} 
@@ -11,7 +11,7 @@
 
 {% block content %} 
     <div class="container"> 
-        <h1>{{ flatpage.title }}</h1> 
-        {{ flatpage.content }} 
+        <h1>{{ title }}</h1>
+        {{ content }}
     </div> 
 {% endblock %}
