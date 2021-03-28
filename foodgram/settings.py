@@ -7,7 +7,7 @@ SECRET_KEY = ENV.get('DJANGO_SECRET_KEY')
 # ALLOWED_HOSTS = ENV.get('DJANGO_ALLOWED_HOSTS').split(', ')
 ALLOWED_HOSTS = ['*']
 
-DEBUG = False
+DEBUG = True
 
 INSTALLED_APPS = [
     'users',

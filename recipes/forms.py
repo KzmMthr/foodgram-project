@@ -34,7 +34,7 @@ class RecipeEnterForm(forms.ModelForm):
                 for tag in self.cleaned_data['tags']:
                     recipe.tags.add(tag.id)
 
-                ingredients = []
+                ingredients = {}
                 for key, value in self.data.items():
                     if 'nameIngredient' in key:
                         name = value
@@ -44,19 +44,20 @@ class RecipeEnterForm(forms.ModelForm):
                         dimension = value
                         ingredient = get_object_or_404(
                             Ingredient, name=name, dimension=dimension)
-                        ingredients.append(
-                            RecipeIngredient(
-                                ingredient=ingredient,
-                                recipe=recipe, count=count
-                            )
+                        if ingredient.name not in ingredients.keys():
+                            ingredients[name] = [ingredient, count]
+                        else:
+                            ingredients[name][1] += count
+                recipe_ingridients = []
+                for recipe_ingridient in ingredients.values():
+                    recipe_ingridients.append(
+                        RecipeIngredient(
+                            ingredient=recipe_ingridient[0],
+                            recipe=recipe, count=recipe_ingridient[1]
                         )
+                    )
                 RecipeIngredient.objects.bulk_create(
-                    ingredients
+                    recipe_ingridients
                 )
         except IntegrityError:
             return 400
-
-    def edit_recipe(self, request, form, instance):
-        with transaction.atomic():
-            RecipeIngredient.objects.filter(recipe=instance).delete()
-            return save_recipe(request, form)
