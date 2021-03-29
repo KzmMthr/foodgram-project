@@ -40,16 +40,15 @@
                     </li> 
                     {% endif %}
                 {% endfor %}
-                {% if author.recipes_ingredients >= 4 %}
+                {% if author.recipes.all.count >= 4 %}
                     <li class="card-user__item">
-                        <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ author.recipes_ingredients|add:"-3" }} рецептов...</a>
+                        <a href="{% url 'profile' author.username %}" class="card-user__link link">Еще {{ author.recipes.all.count|add:"-3" }} рецептов...</a>
                     </li>
                 {% endif %}
             </ul>
         </div>
-        
-        <div class="card-user__footer">
 
+        <div class="card-user__footer">
             <button class="button button_style_light-blue button_size_auto" name="subscribe" onClick="refreshPage()">Отписаться</button>
         </div>
         </div>
