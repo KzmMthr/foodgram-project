@@ -53,9 +53,9 @@ def recipe_edit(request, pk):
     form = RecipeEnterForm(request.POST or None,
                            files=request.FILES or None, instance=recipe)
 
-    if request.method == 'POST' and not get_ingridients(request):
-        form.add_error(None, 'Введите хотя бы один ингридиент')
-
+    if request.method == 'POST' and not get_ingridients(request) \
+            or not is_positive_ingridient(request):
+        form.add_error(None, 'Введите положительные ингридиенты')
     if form.is_valid():
         for tag_id in recipe.tags.all():
             recipe.tags.remove(tag_id)

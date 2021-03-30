@@ -40,7 +40,9 @@ def is_positive_ingridient(request):
 
 
 def save_recipe(request, form):
-    '''Функция сохраняет данные при создании и редактировании рецепта.'''
+    '''
+    For save and edit recipes
+    '''
     with transaction.atomic():
         recipe = form.save(commit=False)
         recipe.author = request.user
@@ -48,7 +50,7 @@ def save_recipe(request, form):
         for tag in form.cleaned_data['tags']:
             recipe.tags.add(tag.id)
 
-        ingredients = []
+        dict_ingredients_count = {}
         for key, value in request.POST.items():
             if 'nameIngredient' in key:
                 name = value
@@ -57,8 +59,18 @@ def save_recipe(request, form):
             elif 'unitsIngredient' in key:
                 ingredient = get_object_or_404(
                     Ingredient, name=name)
-                ingredients.append(
-                    RecipeIngredient(
-                        ingredient=ingredient, recipe=recipe, count=count)
-                )
+                # check RecipeIngridient for duplicated
+                if ingredient not in dict_ingredients_count.keys():
+                    dict_ingredients_count[ingredient] = int(count)
+                else:
+                    dict_ingredients_count[ingredient] += int(count)
+
+        ingredients = []
+        for ingredient, count in dict_ingredients_count.items():
+            ingredients.append(
+                RecipeIngredient(ingredient=ingredient,
+                                 recipe=recipe,
+                                 count=count)
+            )
+
         RecipeIngredient.objects.bulk_create(ingredients)
