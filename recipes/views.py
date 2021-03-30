@@ -5,10 +5,10 @@ from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, redirect, render
 
 from api.models import Purchase
-
 from .forms import RecipeEnterForm
 from .models import Recipe, Tag
-from .utils import get_recipes_tags, paginator_mixin, get_ingridients
+from .utils import get_recipes_tags, paginator_mixin, get_ingridients, \
+    save_recipe
 
 User = get_user_model()
 
@@ -33,7 +33,7 @@ def recipe_add(request):
     if request.method == 'POST' and not get_ingridients(request):
         form.add_error(None, 'Введите хотя бы один ингридиент')
     if form.is_valid():
-        recipe_save = form.save_recipe(request)
+        recipe_save = save_recipe(request, form)
         if recipe_save == 400:
             return redirect('page_bad_request')
         return redirect('index')
@@ -59,16 +59,16 @@ def recipe_edit(request, pk):
         for tag_id in recipe.tags.all():
             recipe.tags.remove(tag_id)
         recipe.recipe_ingredients.all().delete()
-        recipe_save = form.save_recipe(request)
+        recipe_save = save_recipe(request, form)
         if recipe_save == 400:
             return redirect('page_bad_request')
         return redirect('recipe_view', pk=pk)
 
-    return render(request, 'formRecipe.html', {'form': form,
-                                               'recipe': recipe,
-                                               'title': 'Редактирование',
-                                               'button': 'Сохранить',
-                                               'delete': 'Удалить'}
+    return render(request, 'formChangeRecipe.html', {'form': form,
+                                                     'recipe': recipe,
+                                                     'title': 'Редактирование',
+                                                     'button': 'Сохранить',
+                                                     'delete': 'Удалить'}
                   )
 
 

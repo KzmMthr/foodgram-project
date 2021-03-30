@@ -7,7 +7,7 @@ SECRET_KEY = ENV.get('DJANGO_SECRET_KEY')
 # ALLOWED_HOSTS = ENV.get('DJANGO_ALLOWED_HOSTS').split(', ')
 ALLOWED_HOSTS = ['*']
 
-DEBUG = True
+DEBUG = False
 
 INSTALLED_APPS = [
     'users',
@@ -109,8 +109,7 @@ LOGOUT_REDIRECT_URL = 'index'
 EMAIL_BACKEND = 'django.core.mail.backends.filebased.EmailBackend'
 EMAIL_FILE_PATH = BASE_DIR / 'send_mails'
 
-SITE_ID = 1
-
+SITE_ID = 16
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
