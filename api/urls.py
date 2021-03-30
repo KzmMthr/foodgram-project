@@ -1,3 +1,5 @@
+import debug_toolbar
+
 from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
@@ -12,6 +14,7 @@ router.register('purchases', PurchaseViewSet)
 router.register('subscriptions', SubscribeViewSet)
 
 urlpatterns = [
+    path('debug/', include(debug_toolbar.urls)),
     path('v1/', include(router.urls)),
     path('v1/ingredients/', IngredientAPIView.as_view()),
 

@@ -8,7 +8,7 @@ from api.models import Purchase
 from .forms import RecipeEnterForm
 from .models import Recipe, Tag
 from .utils import get_recipes_tags, paginator_mixin, get_ingridients, \
-    save_recipe
+    save_recipe, is_positive_ingridient
 
 User = get_user_model()
 
@@ -30,8 +30,9 @@ def recipe_view(request, pk):
 @login_required
 def recipe_add(request):
     form = RecipeEnterForm(request.POST or None, files=request.FILES or None)
-    if request.method == 'POST' and not get_ingridients(request):
-        form.add_error(None, 'Введите хотя бы один ингридиент')
+    if request.method == 'POST' and not get_ingridients(request) \
+            or not is_positive_ingridient(request):
+        form.add_error(None, 'Введите положительные ингридиенты')
     if form.is_valid():
         recipe_save = save_recipe(request, form)
         if recipe_save == 400:
