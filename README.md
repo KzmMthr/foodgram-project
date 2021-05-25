@@ -1,6 +1,4 @@
 # Foodgram 
-# Working sample you can find http://130.193.35.149
-
 
 This project allows you to publish various recipes. Users can follow authors and add their recipes to favorite or shoping list.
 
